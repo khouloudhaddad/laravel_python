@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  laravel:
+    image: php:8.1-fpm
+    container_name: laravel_app
+    volumes:
+      - ./laravel-app:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - mysql
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=python_laravel
+      - DB_USERNAME=root
+      - DB_PASSWORD=
+
+  python:
+    image: python:3.9
+    container_name: python_app
+    volumes:
+      - ./python-app:/usr/src/app
+    working_dir: /usr/src/app
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_DATABASE=python_laravel
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
