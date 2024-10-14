@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   laravel:
@@ -19,16 +19,20 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=
     ports:
-      - "8000:80" 
-
+      - "8000:80"
   python:
-    image: python:3.9
+    build:
+      context: ./python-app
+      dockerfile: Dockerfile
     container_name: python_app
     volumes:
       - ./python-app:/usr/src/app
-    working_dir: /usr/src/app
+    ports:
+      - "5000:5000" # Map host port 5000 to container port 5000
     networks:
       - app-network
+    depends_on:
+      - mysql
 
   mysql:
     image: mysql:5.7
